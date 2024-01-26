@@ -1,0 +1,47 @@
+server:
+  port: 8081
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.springframework.security: DEBUG
+
+springdoc:
+  packages-to-scan: com.girok.girokserver.domain.auth.controller
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+
+jwt:
+  secret: ${JWT_SECRET}
+  access_token_expiration_ms: ${JWT_ACCESS_TOKEN_EXPIRATION_MS}
+  refresh_token_expiration_ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS}
+
+mailgun:
+  api_key: ${MAILGUN_API_KEY}
+  domain: ${MAILGUN_DOMAIN}
+
+email_verification:
+  expire_seconds: ${VERIFICATION_EXPIRE_SECONDS}
+
