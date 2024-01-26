@@ -32,6 +32,12 @@ public class AuthController {
 
     private final AuthFacade authFacade;
 
+    @GetMapping("/health-check")
+    @ResponseStatus(HttpStatus.OK)
+    public String healthCheck() {
+        return "I'm doing fine";
+    }
+
     @PostMapping("/auth/verification-code")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Send email verification code")

@@ -1,15 +1,17 @@
-buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-	}
-}
+//buildscript {
+//	ext {
+//		queryDslVersion = "5.0.0"
+//	}
+//}
+
+
 
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
 	// querydsl
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+//	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.girok'
@@ -57,33 +59,74 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// Querydsl 추가
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+//	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+//	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+//	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+//	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 
-//querydsl 추가 시작
-def querydslDir = "$buildDir/generated/querydsl"
+// Querydsl Q Class 생성 위치
+//def querydslDir = "${projectDir}/src/main/generated/"
+//
+//// Querydsl Q Class 생성 위치 지정
+//tasks.withType(JavaCompile) {
+//	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+//}
+//
+//// java source set 에 Querydsl Q Class 위치 추가
+//sourceSets {
+//	main.java.srcDirs += [ querydslDir ]
+//}
+//
+//// gradle clean 시, Q Class 디렉토리까지 삭제하도록 설정
+//clean {
+//	delete file(querydslDir)
+//}
+//
+//// Querydsl plugin configuration
+//querydsl {
+//	jpa = true
+//	querydslSourcesDir = querydslDir
+//}
 
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
-sourceSets {
-	main.java.srcDir querydslDir
-}
-compileQuerydsl{
-	options.annotationProcessorPath = configurations.querydsl
-}
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	querydsl.extendsFrom compileClasspath
-}
-//querydsl 추가 끝
+//
+//def generatedSourcesDir = "$buildDir/generated/querydsl"
+//
+//tasks.register('cleanQuerydsl', Delete) {
+//	delete generatedSourcesDir
+//}
+//
+//tasks.named('compileJava') {
+//	dependsOn cleanQuerydsl
+//}
+//
+////clean{
+////	delete file(generated)
+////}
+//
+////querydsl 추가 시작
+//def querydslDir = "$buildDir/generated/querydsl"
+//
+//querydsl {
+//	jpa = true
+//	querydslSourcesDir = querydslDir
+//}
+//
+//sourceSets {
+//	main.java.srcDir querydslDir
+//}
+//
+//compileQuerydsl{
+//	options.annotationProcessorPath = configurations.querydsl
+//}
+//configurations {
+//	compileOnly {
+//		extendsFrom annotationProcessor
+//	}
+//	querydsl.extendsFrom compileClasspath
+//}
+////querydsl 추가 끝
