@@ -36,20 +36,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        HttpHeaders resHeaders = new HttpHeaders();
-        resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json;charset=UTF-8");
 
         FieldError fieldError = e.getBindingResult().getFieldError();
         String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : "";
         String messageCode = fieldError != null && fieldError.getCode() != null ? fieldError.getCode() : "";
         ErrorResponse errorResponse = getErrorResponse(messageCode, errorMessage);
-        return new ResponseEntity<>(errorResponse, resHeaders, BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, headers, BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json;charset=UTF-8");
+
         ErrorResponse errorResponse = new ErrorResponse(400, "INVALID_INPUT_FORMAT", e.getMessage());
-        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, headers, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json;charset=UTF-8");
+
+        ErrorResponse errorResponse = new ErrorResponse(500, "INTERNAL_ERROR", e.getMessage());
+        return new ResponseEntity<>(errorResponse, headers, INTERNAL_SERVER_ERROR);
     }
 
     public ErrorResponse getErrorResponse(String originCode, String message) {
