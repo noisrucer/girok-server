@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 errorInfo.getStatusCode(),
                 errorInfo.getErrorCode(),
-                errorInfo.getMessage()
+                e.getMessage()
         );
 
         return ResponseEntity

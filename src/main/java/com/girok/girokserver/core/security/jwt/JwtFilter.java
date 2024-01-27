@@ -43,10 +43,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        JwtUserInfo info = (JwtUserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("info = " + info);
-        System.out.println("info.getUserId() = " + info.getUserId());
-
 
         filterChain.doFilter(request, response);
     }
