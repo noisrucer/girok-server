@@ -22,11 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Authentication", description = "Authentication Process API")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "Authentication")
 @RestController
 @RequiredArgsConstructor
-@Validated
 @RequestMapping("/api/v1")
 public class AuthController {
 

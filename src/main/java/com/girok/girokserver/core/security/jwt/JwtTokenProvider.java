@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -76,5 +77,9 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             throw new CustomException(INVALID_JWT_TOKEN);
         }
+    }
+
+    public JwtUserInfo getCurrentUserInfo() {
+        return (JwtUserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

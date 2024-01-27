@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.girok.girokserver.core.exception.ErrorInfo.*;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,20 +26,21 @@ public class MemberService {
     }
 
     @Transactional
-    public void createMember(String email, String rawPassword) {
+    public Member createMember(String email, String rawPassword) {
         Member member = Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(rawPassword))
                 .build();
 
         memberRepository.save(member);
+        return member;
     }
 
     @Transactional
     public void updatePassword(String email, String newRawPassword) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         if (optionalMember.isEmpty()) {
-            throw new CustomException(ErrorInfo.MEMBER_NOT_EXIST);
+            throw new CustomException(MEMBER_NOT_EXIST);
         }
 
         Member member = optionalMember.get();
@@ -46,5 +49,10 @@ public class MemberService {
 
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    public Member findMemberById(Long userId) {
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_EXIST));
     }
 }
