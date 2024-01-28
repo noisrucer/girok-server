@@ -17,11 +17,17 @@ public enum ErrorInfo {
     /** Category **/
     PARENT_CATEGORY_NOT_EXIST(400, "PARENT_CATEGORY_NOT_EXIST", "Parent Category does not exist."),
     DUPLICATE_CATEGORY(400, "DUPLICATE_CATEGORY", "Parent category cannot have multiple child categories with the same name"),
+    CATEGORY_NOT_FOUND(400, "CATEGORY_NOT_FOUND", "Category with the given id is not found"),
+    EMPTY_CATEGORY_NAME(400, "EMPTY_CATEGORY_NAME", "Category name cannot be empty."),
+    NON_TOP_LEVEL_CATEGORY_COLOR_UPDATE_ATTEMPT_EXCEPTION(400, "NON_TOP_LEVEL_CATEGORY_COLOR_UPDATE_ATTEMPT_EXCEPTION", "You can only update the top level category colors"),
 
 
     /** JWT Exceptions **/
     INVALID_JWT_TOKEN(401, "INVALID_JWT_TOKEN", "JWT token is invalid."),
-    EXPIRED_JWT_TOKEN(401, "EXPIRED_JWT_TOKEN", "JWT token is expired.");
+    EXPIRED_JWT_TOKEN(401, "EXPIRED_JWT_TOKEN", "JWT token is expired."),
+
+    /** Global Exceptions **/
+    UNAUTHORIZED_OPERATION_EXCEPTION(403, "UNAUTHORIZED_OPERATION_EXCEPTION", "You do not have permission to perform the operation");
 
 
     private final int statusCode;

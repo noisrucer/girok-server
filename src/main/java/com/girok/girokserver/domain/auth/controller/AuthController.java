@@ -22,7 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Authentication")
+@Tag(name = "1. Authentication")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -143,9 +143,8 @@ public class AuthController {
     @GetMapping("/auth/email/registered")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Check whether the given email is registered")
-    public ResponseEntity<CheckEmailRegisteredResponse> checkEmailRegistered(@Email @RequestParam("email") String email) {
+    public ResponseEntity<CheckEmailRegisteredResponse> checkEmailRegistered(@RequestParam("email") String email) {
         boolean isRegistered = authFacade.checkEmailRegistered(email);
         return ResponseEntity.ok().body(new CheckEmailRegisteredResponse(isRegistered));
     }
-
 }

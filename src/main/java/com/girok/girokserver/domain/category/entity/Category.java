@@ -59,11 +59,19 @@ public class Category extends AuditBase {
         return category;
     }
 
-
     // Relation methods
     /**
      * Add a child category (<->)
      */
+    public void assignChildren(List<Category> children) {
+        this.children.clear();
+        this.children.addAll(children);
+        for (Category child : children) {
+            child.parent = this;
+        }
+    }
+
+
     public void addChildCategory(Category childCategory) {
         this.children.add(childCategory);
         childCategory.parent = this;
@@ -71,7 +79,23 @@ public class Category extends AuditBase {
 
     public void assignParent(Category parentCategory) {
         this.parent = parentCategory;
-        parentCategory.getChildren().add(this);
+        if (parentCategory != null) {
+            parentCategory.getChildren().add(this);
+        }
     }
+
+    // Business Logics
+    public Long getParentId() {
+        return this.parent == null ? null : this.parent.getId();
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateColor(CategoryColor color) {
+        this.color = color;
+    }
+
 
 }

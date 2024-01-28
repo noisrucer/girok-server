@@ -1,10 +1,19 @@
 package com.girok.girokserver.global.enums;
 
 public enum CategoryColor {
-    YELLOW,
-    ORANGE,
-    BLUE,
-    WHITE,
-    BROWN,
-    GREEN
+    PINK,
+    GREYISH_YELLOW,
+    LIME,
+    BEIGE,
+    LIGHT_PINK,
+    GREYISH_GREEN,
+    GREYISH_BLUE,
+    CLOUDY,
+    LAVENDER,
+    CORN,
+    MINT,
+    NEON,
+    ROLLER_RINK,
+    LIGHT_CHOCO,
+    THOMAS
 }

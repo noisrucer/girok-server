@@ -51,8 +51,8 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public Member findMemberById(Long userId) {
-        return memberRepository.findById(userId)
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_EXIST));
     }
 }

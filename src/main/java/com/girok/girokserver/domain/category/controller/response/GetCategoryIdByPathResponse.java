@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CreateCategoryResponse {
+public class GetCategoryIdByPathResponse {
 
     private Long categoryId;
 }
