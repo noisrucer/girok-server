@@ -22,8 +22,8 @@ logging.level:
 
 springdoc:
   packages-to-scan:
-  - com.girok.girokserver.domain.auth.controller
-  - com.girok.girokserver.domain.category.controller
+    - com.girok.girokserver.domain.auth.controller
+    - com.girok.girokserver.domain.category.controller
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
