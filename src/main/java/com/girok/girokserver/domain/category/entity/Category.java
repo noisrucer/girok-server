@@ -37,7 +37,7 @@ public class Category extends AuditBase {
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Category> children = new ArrayList<>();
+    private final List<Category> children = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "color", nullable = false)
