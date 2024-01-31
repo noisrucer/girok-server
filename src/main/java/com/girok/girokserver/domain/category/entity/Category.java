@@ -1,5 +1,6 @@
 package com.girok.girokserver.domain.category.entity;
 
+import com.girok.girokserver.domain.event.entity.Event;
 import com.girok.girokserver.domain.member.entity.Member;
 import com.girok.girokserver.global.baseentity.AuditBase;
 import com.girok.girokserver.global.enums.CategoryColor;
@@ -36,8 +37,11 @@ public class Category extends AuditBase {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Category> children = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Event> events = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "color", nullable = false)
@@ -75,6 +79,11 @@ public class Category extends AuditBase {
     public void addChildCategory(Category childCategory) {
         this.children.add(childCategory);
         childCategory.parent = this;
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+        event.assignCategory(this);
     }
 
     public void assignParent(Category parentCategory) {

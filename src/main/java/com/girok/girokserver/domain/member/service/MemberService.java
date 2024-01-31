@@ -40,7 +40,7 @@ public class MemberService {
     public void updatePassword(String email, String newRawPassword) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         if (optionalMember.isEmpty()) {
-            throw new CustomException(MEMBER_NOT_EXIST);
+            throw new CustomException(MEMBER_NOT_FOUND);
         }
 
         Member member = optionalMember.get();
@@ -51,8 +51,8 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public Member findMemberById(Long memberId) {
+    public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MEMBER_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
     }
 }

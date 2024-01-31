@@ -40,6 +40,13 @@ public class GlobalExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json;charset=UTF-8");
 
+        // Check for class-level constraint violations
+        if (!e.getBindingResult().getGlobalErrors().isEmpty()) {
+            String globalErrorMessage = e.getBindingResult().getGlobalErrors().get(0).getDefaultMessage();
+            ErrorResponse errorResponse = new ErrorResponse(400, "INVALID_ARGUMENT", globalErrorMessage);
+            return new ResponseEntity<>(errorResponse, headers, HttpStatus.BAD_REQUEST);
+        }
+
         FieldError fieldError = e.getBindingResult().getFieldError();
         String errorMessage = "Method argument not valid";
         if (fieldError != null) {

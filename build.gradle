@@ -37,6 +37,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation "org.springframework.boot:spring-boot-starter-security"
 
+	// H2 - for test
+	runtimeOnly 'com.h2database:h2'
+
+//	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+//	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -59,67 +65,24 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// Querydsl 추가
-//	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-//	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-//	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-//	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	implementation "com.querydsl:querydsl-core"
+	implementation "com.querydsl:querydsl-collections"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
-//tasks.named('test') {
-//	useJUnitPlatform()
-//}
-
-// Querydsl Q Class 생성 위치
-//def querydslDir = "${projectDir}/src/main/generated/"
-//
-//// Querydsl Q Class 생성 위치 지정
-//tasks.withType(JavaCompile) {
-//	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
-//}
-//
-//// java source set 에 Querydsl Q Class 위치 추가
-//sourceSets {
-//	main.java.srcDirs += [ querydslDir ]
-//}
-//
-//// gradle clean 시, Q Class 디렉토리까지 삭제하도록 설정
-//clean {
-//	delete file(querydslDir)
-//}
-//
-//// Querydsl plugin configuration
-//querydsl {
-//	jpa = true
-//	querydslSourcesDir = querydslDir
-//}
-
-//
-//def generatedSourcesDir = "$buildDir/generated/querydsl"
-//
-//tasks.register('cleanQuerydsl', Delete) {
-//	delete generatedSourcesDir
-//}
-//
-//tasks.named('compileJava') {
-//	dependsOn cleanQuerydsl
-//}
-//
-////clean{
-////	delete file(generated)
-////}
-//
-////querydsl 추가 시작
-//def querydslDir = "$buildDir/generated/querydsl"
+//querydsl 추가 시작
+//def querydslDir = "src/main/generated"
 //
 //querydsl {
 //	jpa = true
 //	querydslSourcesDir = querydslDir
 //}
-//
 //sourceSets {
 //	main.java.srcDir querydslDir
 //}
-//
 //compileQuerydsl{
 //	options.annotationProcessorPath = configurations.querydsl
 //}
@@ -129,4 +92,27 @@ dependencies {
 //	}
 //	querydsl.extendsFrom compileClasspath
 //}
-////querydsl 추가 끝
+//querydsl 추가 끝
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+///// Querydsl 빌드 옵션 (옵셔널)
+def generated = 'src/main/generated'
+
+///// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+///// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+///// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
+}

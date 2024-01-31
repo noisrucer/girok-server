@@ -1,6 +1,7 @@
 package com.girok.girokserver.domain.member.entity;
 
 import com.girok.girokserver.domain.category.entity.Category;
+import com.girok.girokserver.domain.event.entity.Event;
 import com.girok.girokserver.global.baseentity.AuditBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -28,8 +29,11 @@ public class Member extends AuditBase {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 
     public void updatePassword(String newHashedPassword) {
         this.password = newHashedPassword;
@@ -43,5 +47,10 @@ public class Member extends AuditBase {
     public void addCategory(Category category) {
         this.categories.add(category);
         category.setMember(this);
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+        event.assignMember(this);
     }
 }

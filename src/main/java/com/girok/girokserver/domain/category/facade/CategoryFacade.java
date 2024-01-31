@@ -26,21 +26,21 @@ public class CategoryFacade {
     private final MemberService memberService;
 
     public List<Category> getCategoriesAsTree(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         return categoryService.getCategoriesAsTree(member);
     }
 
 
     @Transactional
     public Long createCategoryByPath(Long memberId, CategoryColor color, CategoryPath path) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         Category category = categoryService.createCategoryByPath(member, color, path);
         return category.getId();
     }
 
     @Transactional
     public Long createCategoryById(Long memberId, CategoryColor color, Long parentId, String categoryName) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         Category category = categoryService.createCategoryById(member, color, parentId, categoryName);
         return category.getId();
     }
@@ -51,20 +51,20 @@ public class CategoryFacade {
     }
 
     public Long getCategoryIdByPath(Long memberId, CategoryPath path) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         Category category = categoryService.getCategoryByPath(member, path);
         return category.getId();
     }
 
     @Transactional
     public void updateCategoryInfo(Long memberId, Long categoryId, CategoryUpdateDto categoryUpdateDto) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         categoryService.updateCategoryInfo(member, categoryId, categoryUpdateDto);
     }
 
     @Transactional
     public void updateCategoryParent(Long memberId, Long categoryId, Long newParentId) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         categoryService.updateCategoryParent(member, categoryId, newParentId);
     }
 

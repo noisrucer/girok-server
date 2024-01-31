@@ -102,7 +102,7 @@ public class AuthController {
     @Operation(summary = "Send reset password email verification code")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "**Bad Request**: \n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist."
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist."
             ),
     })
     public void sendResetPasswordVerificationCode(@Valid @RequestBody SendVerificationCodeRequest request) {
@@ -114,7 +114,7 @@ public class AuthController {
     @Operation(summary = "Verify reset password verification code")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "Bad Request: \n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist.\n" +
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist.\n" +
                     "- `EMAIL_VERIFICATION_NOT_FOUND`: Email verification with the given email is not found.\n" +
                     "- `EMAIL_ALREADY_VERIFIED`: Email address is already verified.\n" +
                     "- `INVALID_VERIFICATION_CODE`: Invalid verification code.\n" +
@@ -130,7 +130,7 @@ public class AuthController {
     @Operation(summary = "Reset password")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "**Bad Request**:\n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist.\n" +
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist.\n" +
                     "- `EMAIL_VERIFICATION_NOT_FOUND`: Email verification with the given email is not found.\n" +
                     "- `EMAIL_NOT_VERIFIED`: Email is not verified.\n" +
                     "- `INVALID_VERIFICATION_CODE`: Invalid verification code."

@@ -23,6 +23,11 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    public Category getCategoryByMemberAndId(Member member, Long id) {
+        return categoryRepository.findByMemberAndId(member, id)
+                .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+    }
+
     public List<Category> getCategoriesAsTree(Member member) {
         // TODO: FETCH JOIN 안쓰면 mapper에서 query가 나간다. Self reference기 때문에 fetch join도 낭비라고 생각하는데(hahsmap 직접 만들고 직접 assignChildren 해주기 때문), 왜 service 밖을 벗어나면 lazy-loading이 다시 일어날까?
         List<Category> allCategories = categoryRepository.findAllWithChildrenByMember(member);
@@ -82,7 +87,7 @@ public class CategoryService {
         if (parentId != null) {
             Optional<Category> optionalParentCategory = categoryRepository.findById(parentId);
             if (optionalParentCategory.isEmpty()) {
-                throw new CustomException(PARENT_CATEGORY_NOT_EXIST);
+                throw new CustomException(PARENT_CATEGORY_NOT_FOUND);
             }
             parentCategory = optionalParentCategory.get();
         }
@@ -170,7 +175,7 @@ public class CategoryService {
         for (String categoryName : categoryPath.getPath()) {
             Category category = categoryRepository.findByMemberAndParentAndName(member, parentCategory, categoryName)
                     .orElseThrow(() -> new CustomException(
-                            PARENT_CATEGORY_NOT_EXIST,
+                            PARENT_CATEGORY_NOT_FOUND,
                             "Parent category " + "'" + parentCategoryPathStringBuilder.toString() + "'" + " does not have child category " + "'" + categoryName + "'"
                     ));
 
