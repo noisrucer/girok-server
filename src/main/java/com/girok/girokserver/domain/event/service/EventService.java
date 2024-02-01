@@ -1,27 +1,24 @@
 package com.girok.girokserver.domain.event.service;
 
 import com.girok.girokserver.core.exception.CustomException;
-import com.girok.girokserver.core.exception.ErrorInfo;
 import com.girok.girokserver.domain.category.entity.Category;
 import com.girok.girokserver.domain.event.controller.request.EventFilterCriteria;
 import com.girok.girokserver.domain.event.entity.Event;
 import com.girok.girokserver.domain.event.entity.EventDate;
 import com.girok.girokserver.domain.event.facade.dto.CreateEventFacadeDto;
+import com.girok.girokserver.domain.event.repository.EventQueryRepository;
 import com.girok.girokserver.domain.event.repository.EventRepository;
 import com.girok.girokserver.domain.member.entity.Member;
-import com.girok.girokserver.global.enums.EventPriority;
-import com.girok.girokserver.global.enums.EventRepetitionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.girok.girokserver.core.exception.ErrorInfo.*;
+import static com.girok.girokserver.core.exception.ErrorInfo.EVENT_NOT_FOUND;
+import static com.girok.girokserver.core.exception.ErrorInfo.UNAUTHORIZED_OPERATION_EXCEPTION;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +26,7 @@ import static com.girok.girokserver.core.exception.ErrorInfo.*;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventQueryRepository eventQueryRepository;
 
     @Transactional
     public Long createEvent(
@@ -58,9 +56,12 @@ public class EventService {
         eventRepository.save(event);
         return event.getId();
     }
+    
 
     public List<Event> getAllEvents(Member member, EventFilterCriteria criteria) {
-        return new ArrayList<>();
+        return eventQueryRepository.findEvents(
+                member.getId(), criteria.getStartDate(), criteria.getEndDate(), criteria.getCategoryId(), criteria.getPriority(), criteria.getTags()
+        );
     }
 
     public Event getSingleEvent(Member member, Long eventId) {

@@ -4,14 +4,15 @@ import com.girok.girokserver.global.enums.EventPriority;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class EventFilterCriteria {
     @NotNull
@@ -24,7 +25,7 @@ public class EventFilterCriteria {
     @Schema(example = "2024-05-31", type = "string")
     private LocalDate endDate;
 
-    private String category;
+    private Long categoryId;
 
     private EventPriority priority;
 

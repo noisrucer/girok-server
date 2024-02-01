@@ -3,7 +3,6 @@ package com.girok.girokserver.domain.event.controller.response;
 import com.girok.girokserver.global.enums.CategoryColor;
 import com.girok.girokserver.global.enums.EventPriority;
 import com.girok.girokserver.global.enums.EventRepetitionType;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

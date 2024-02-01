@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.stream.EventFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,10 +49,64 @@ public class EventFacade {
         return new CreateEventResponse(eventId);
     }
 
+//    @Transactional
+//    public void updateEvent(Long memberId, Long eventId, CreateEventFacadeDto updateEventFacadeDto) {
+//        Member member = memberService.getMemberById(memberId);
+//
+//        Long categoryId = updateEventFacadeDto.getCategoryId();
+//        Category category = null;
+//        if (categoryId != null) {
+//            category = categoryService.getCategoryByMemberAndId(member, categoryId);
+//        }
+//    }
+
     public GetAllEventsResponse getAllEvents(Long memberId, EventFilterCriteria criteria) {
         Member member = memberService.getMemberById(memberId);
         List<Event> events = eventService.getAllEvents(member, criteria);
-        return new GetAllEventsResponse();
+        List<GetAllEventsResponse.EventDto> eventDtos = new ArrayList<>();
+        System.out.println("A");
+
+        for (Event event : events) {
+            EventDate eventDate = event.getEventDate();
+
+            // Build category path
+            Category category = event.getCategory();
+            List<GetAllEventsResponse.Category> categoryPath = new ArrayList<>();
+            while (category != null) {
+                categoryPath.add(new GetAllEventsResponse.Category(category.getId(), category.getName()));
+                category = category.getParent();
+            }
+            Collections.reverse(categoryPath);
+
+            GetAllEventsResponse.EventDto eventDto = GetAllEventsResponse.EventDto.builder()
+                    .id(event.getId())
+                    .name(event.getName())
+                    .color(event.getColor())
+                    .tags(event.getTags().stream().map(EventTag::getName).toList())
+                    .priority(event.getPriority())
+                    .memo(event.getMemo())
+                    .eventDate(
+                            GetAllEventsResponse.EventDate.builder()
+                                    .startDate(eventDate.getStartDate())
+                                    .startTime(eventDate.getStartTime())
+                                    .endDate(eventDate.getEndDate())
+                                    .endTime(eventDate.getEndTime())
+                                    .build()
+                    )
+                    .repetition(
+                            GetAllEventsResponse.Repetition.builder()
+                                    .repetitionType(event.getRepetitionType())
+                                    .repetitionEndDate(event.getRepetitionEndDate())
+                                    .build()
+                    )
+                    .categoryPath(categoryPath)
+                    .singleDayEvent(event.isSingleDayEvent())
+                    .build();
+
+            eventDtos.add(eventDto);
+        }
+
+        return new GetAllEventsResponse(eventDtos);
     }
 
     public GetSingleEventResponse getSingleEvent(Long memberId, Long eventId) {

@@ -1,17 +1,18 @@
 package com.girok.girokserver.domain.event.repository;
 
-import com.girok.girokserver.domain.event.controller.request.EventFilterCriteria;
 import com.girok.girokserver.domain.event.entity.Event;
 import com.girok.girokserver.domain.event.entity.QEvent;
+import com.girok.girokserver.domain.event.entity.QEventTag;
+import com.girok.girokserver.global.enums.EventPriority;
 import com.girok.girokserver.global.enums.EventRepetitionType;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +22,17 @@ public class EventQueryRepository {
 
     private final JPAQueryFactory queryFactory;
     private static final QEvent event = QEvent.event;
+    private static final QEventTag eventTag = QEventTag.eventTag;
 
-    public List<Event> findEvents(Long memberId, EventFilterCriteria criteria) {
-        LocalDate windowStartDate = criteria.getStartDate();
-        LocalDate windowEndDate = criteria.getEndDate();
+
+    public List<Event> findEvents(Long memberId, LocalDate windowStartDate, LocalDate windowEndDate, Long categoryId, EventPriority priority, List<String> tagNames) {
+
         List<Event> nonRepeatingEvents = queryFactory
                 .select(event)
                 .from(event)
                 .where(
+                        event.member.id.eq(memberId),
+                        metadataCombinedCondition(categoryId, priority, tagNames),
                         event.eventDate.startDate.between(windowStartDate, windowEndDate)
                                 .or(
                                         event.eventDate.startDate.before(windowStartDate)
@@ -42,6 +46,8 @@ public class EventQueryRepository {
                 .select(event)
                 .from(event)
                 .where(
+                        event.member.id.eq(memberId),
+                        metadataCombinedCondition(categoryId, priority, tagNames),
                         event.eventDate.startDate.before(windowStartDate),
                         event.repetitionType.isNotNull(),
                         event.repetitionEndDate.goe(windowStartDate)
@@ -81,6 +87,57 @@ public class EventQueryRepository {
 
         nonRepeatingEvents.addAll(repeatingEvents);
         return nonRepeatingEvents;
+    }
+
+    private BooleanExpression categoryIdEq(Long categoryId) {
+        return categoryId != null ? event.category.id.eq(categoryId) : null;
+    }
+
+    private BooleanExpression priorityEq(EventPriority priority) {
+        return priority != null ? event.priority.eq(priority) : null;
+    }
+
+    private BooleanExpression tagsIn(List<String> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return null;
+        }
+
+        BooleanExpression combinedCondition = null;
+
+        for (String tagName : tagNames) {
+            BooleanExpression condition = JPAExpressions
+                    .selectOne()
+                    .from(eventTag)
+                    .where(eventTag.name.eq(tagName), eventTag.event.eq(event))
+                    .exists();
+
+            // Must contain ALL tags
+            combinedCondition = (combinedCondition == null) ? condition : combinedCondition.and(condition);
+        }
+
+        return combinedCondition;
+    }
+
+    private BooleanExpression metadataCombinedCondition(Long categoryId, EventPriority priority, List<String> tagNames) {
+        // Create individual conditions
+        BooleanExpression categoryCondition = categoryIdEq(categoryId);
+        BooleanExpression priorityCondition = priorityEq(priority);
+        BooleanExpression tagsCondition = tagsIn(tagNames);
+
+        // Combine conditions
+        BooleanExpression combinedCondition = null;
+
+        if (categoryCondition != null) {
+            combinedCondition = (combinedCondition == null) ? categoryCondition : combinedCondition.and(categoryCondition);
+        }
+        if (priorityCondition != null) {
+            combinedCondition = (combinedCondition == null) ? priorityCondition : combinedCondition.and(priorityCondition);
+        }
+        if (tagsCondition != null) {
+            combinedCondition = (combinedCondition == null) ? tagsCondition : combinedCondition.and(tagsCondition);
+        }
+
+        return combinedCondition;
     }
 
     private boolean judgeFallInWeekly(Event event, LocalDate windowStartDate, LocalDate windowEndDate) {

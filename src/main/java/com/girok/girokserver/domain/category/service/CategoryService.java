@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.girok.girokserver.core.exception.ErrorInfo.*;
 
@@ -61,6 +60,7 @@ public class CategoryService {
     @Transactional
     public Category createCategoryByPath(Member member, CategoryColor color, CategoryPath categoryPath) {
         // ["A", "B", "C"]
+        // TODO: Error catch
         CategoryPath parentCategoryPath = categoryPath.getParentCategoryPath(); // ["A", "B"]
         String newCategoryName = categoryPath.getLastCategoryName(); // "C"
 
@@ -165,6 +165,7 @@ public class CategoryService {
     /**
      * Get category by category path.
      * ex) If the category path is ["A", "B", "C"], it will retrieve the category "A/B/C"
+     *
      * @param categoryPath Category path.
      * @return The target category. It can be nullable.
      */

@@ -40,7 +40,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all events")
     public ResponseEntity<GetAllEventsResponse> getAllEvents(
-            EventFilterCriteria eventFilterCriteria
+            @Valid EventFilterCriteria eventFilterCriteria
     ) {
         JwtUserInfo jwtUserInfo = jwtTokenProvider.getCurrentUserInfo();
         Long memberId = jwtUserInfo.getMemberId();
@@ -68,4 +68,15 @@ public class EventController {
         Long memberId = jwtUserInfo.getMemberId();
         eventFacade.deleteEvent(memberId, eventId);
     }
+
+//    @PutMapping("/events/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @Operation(summary = "Update an event")
+//    public void updateEvent(@PathVariable(name = "id") Long eventId, @RequestBody CreateEventRequest request) {
+//        JwtUserInfo jwtUserInfo = jwtTokenProvider.getCurrentUserInfo();
+//        Long memberId = jwtUserInfo.getMemberId();
+//
+//        eventFacade.updateEvent(memberId, eventId, EventMapper.toCreateEventFacadeDto(request));
+////        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+//    }
 }

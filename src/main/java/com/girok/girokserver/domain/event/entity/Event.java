@@ -7,11 +7,9 @@ import com.girok.girokserver.global.enums.CategoryColor;
 import com.girok.girokserver.global.enums.EventPriority;
 import com.girok.girokserver.global.enums.EventRepetitionType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,8 @@ import java.util.List;
 @Builder
 public class Event extends AuditBase {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -94,7 +93,11 @@ public class Event extends AuditBase {
         // Tags
         if (tags != null && !tags.isEmpty()) {
             for (String tagName : tags) {
-                event.addTag(new EventTag(tagName, event));
+                event.addTag(EventTag.builder()
+                        .name(tagName)
+                        .event(event)
+                        .build()
+                );
             }
         }
 
@@ -111,7 +114,9 @@ public class Event extends AuditBase {
         this.member = member;
     }
 
-    public void assignCategory(Category category) {this.category = category;}
+    public void assignCategory(Category category) {
+        this.category = category;
+    }
 
     // Business Logic
     public boolean isSingleDayEvent() {
