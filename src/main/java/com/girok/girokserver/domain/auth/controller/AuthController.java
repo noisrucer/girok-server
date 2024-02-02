@@ -4,22 +4,18 @@ import com.girok.girokserver.core.security.jwt.dto.JwtTokenDto;
 import com.girok.girokserver.domain.auth.controller.request.*;
 import com.girok.girokserver.domain.auth.controller.response.CheckEmailRegisteredResponse;
 import com.girok.girokserver.domain.auth.controller.response.LoginResponse;
+import com.girok.girokserver.domain.auth.controller.response.ValidateAccessTokenResponse;
 import com.girok.girokserver.domain.auth.facade.AuthFacade;
-import com.girok.girokserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "1. Authentication")
@@ -147,4 +143,12 @@ public class AuthController {
         boolean isRegistered = authFacade.checkEmailRegistered(email);
         return ResponseEntity.ok().body(new CheckEmailRegisteredResponse(isRegistered));
     }
+
+    @GetMapping("/auth/verify/access-token")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Validate access token")
+    public ValidateAccessTokenResponse validateAccessToken() {
+        return new ValidateAccessTokenResponse(true);
+    }
+
 }
