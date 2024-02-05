@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "event_tag", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"event_id", "name"})
-})
+//@Table(name = "event_tag", uniqueConstraints = {
+//        @UniqueConstraint(columnNames = {"event_id", "name"})
+//})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter

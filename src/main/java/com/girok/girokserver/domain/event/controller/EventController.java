@@ -4,6 +4,7 @@ import com.girok.girokserver.core.security.jwt.JwtTokenProvider;
 import com.girok.girokserver.core.security.jwt.dto.JwtUserInfo;
 import com.girok.girokserver.domain.event.controller.request.CreateEventRequest;
 import com.girok.girokserver.domain.event.controller.request.EventFilterCriteria;
+import com.girok.girokserver.domain.event.controller.request.UpdateEventRequest;
 import com.girok.girokserver.domain.event.controller.response.CreateEventResponse;
 import com.girok.girokserver.domain.event.controller.response.GetAllEventsResponse;
 import com.girok.girokserver.domain.event.controller.response.GetSingleEventResponse;
@@ -34,6 +35,16 @@ public class EventController {
 
         CreateEventResponse responseBody = eventFacade.createEvent(memberId, EventMapper.toCreateEventFacadeDto(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+    }
+
+    @PutMapping("/events/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update an event")
+    public void updateEvent(@PathVariable(name = "id") Long eventId, @RequestBody UpdateEventRequest request) {
+        JwtUserInfo jwtUserInfo = jwtTokenProvider.getCurrentUserInfo();
+        Long memberId = jwtUserInfo.getMemberId();
+
+        eventFacade.updateEvent(memberId, eventId, EventMapper.toCreateEventFacadeDto(request));
     }
 
     @GetMapping("/events")
@@ -68,15 +79,4 @@ public class EventController {
         Long memberId = jwtUserInfo.getMemberId();
         eventFacade.deleteEvent(memberId, eventId);
     }
-
-//    @PutMapping("/events/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    @Operation(summary = "Update an event")
-//    public void updateEvent(@PathVariable(name = "id") Long eventId, @RequestBody CreateEventRequest request) {
-//        JwtUserInfo jwtUserInfo = jwtTokenProvider.getCurrentUserInfo();
-//        Long memberId = jwtUserInfo.getMemberId();
-//
-//        eventFacade.updateEvent(memberId, eventId, EventMapper.toCreateEventFacadeDto(request));
-////        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
-//    }
 }

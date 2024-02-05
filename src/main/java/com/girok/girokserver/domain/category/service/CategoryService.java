@@ -28,7 +28,7 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesAsTree(Member member) {
-        // TODO: FETCH JOIN 안쓰면 mapper에서 query가 나간다. Self reference기 때문에 fetch join도 낭비라고 생각하는데(hahsmap 직접 만들고 직접 assignChildren 해주기 때문), 왜 service 밖을 벗어나면 lazy-loading이 다시 일어날까?
+        // TODO: FETCH JOIN 안쓰면 mapper에서 query가 나간다. Self reference기 때문에 fetch join도 낭비라고 생각하는데(hahsmap 직접 만들고 직접 assignChildren 해주기 때문), 왜 service 밖을 벗어나면 lazy-loading이 다시 일어날까? -> OSIV
         List<Category> allCategories = categoryRepository.findAllWithChildrenByMember(member);
 
         /** [1] Construct children map
@@ -90,6 +90,13 @@ public class CategoryService {
                 throw new CustomException(PARENT_CATEGORY_NOT_FOUND);
             }
             parentCategory = optionalParentCategory.get();
+            if (color == null) { // If not specified, follow the parent(naturally set to its top-level category).
+                color = parentCategory.getColor();
+            } else { // If specified but different from that of the parent, raise error.
+                if (parentCategory.getColor() != color) {
+                    throw new CustomException(INVALID_CHILD_CATEGORY_COLOR);
+                }
+            }
         }
 
         Category category = Category.createCategory(member, parentCategory, categoryName, color);
@@ -185,6 +192,22 @@ public class CategoryService {
         }
 
         return parentCategory; // last category ("C")
+    }
+
+    public List<Long> getAllCategoryIdsOfSubtree(Category category) {
+        List<Long> categoryIds = new ArrayList<>();
+        addCategoryAndSubcategoryIds(category, categoryIds);
+        return categoryIds;
+    }
+
+    private void addCategoryAndSubcategoryIds(Category category, List<Long> categoryIds) {
+        if (category != null) {
+            categoryIds.add(category.getId());
+
+            for (Category child : category.getChildren()) {
+                addCategoryAndSubcategoryIds(child, categoryIds);
+            }
+        }
     }
 
     public void ensureNoDuplicateChildren(Member member, Category parentCategory, String name) {

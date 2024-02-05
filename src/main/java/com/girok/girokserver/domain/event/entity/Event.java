@@ -104,6 +104,49 @@ public class Event extends AuditBase {
         return event;
     }
 
+    public void updateEvent(
+            String name,
+            Category category,
+            Member member,
+            EventDate eventDate,
+            EventRepetitionType repetitionType,
+            LocalDate repetitionEndDate,
+            List<String> tags,
+            EventPriority priority,
+            String memo
+    ) {
+        this.name = name;
+        this.category = category;
+        this.member = member;
+        this.eventDate = eventDate;
+        this.repetitionType = repetitionType;
+        this.repetitionEndDate = repetitionEndDate;
+        this.priority = priority;
+        this.memo = memo;
+
+        this.tags.clear();
+
+        // Member
+        member.addEvent(this);
+
+        // Category
+        if (category != null) {
+            category.addEvent(this);
+        }
+
+        // Tags
+        this.tags.clear();
+        if (tags != null && !tags.isEmpty()) {
+            for (String tagName : tags) {
+                this.tags.add(EventTag.builder()
+                        .name(tagName)
+                        .event(this)
+                        .build());
+            }
+        }
+
+    }
+
     // Relationship Methods
     public void addTag(EventTag tag) {
         this.tags.add(tag);
@@ -112,6 +155,10 @@ public class Event extends AuditBase {
 
     public void assignMember(Member member) {
         this.member = member;
+    }
+
+    public void assignId(Long id) {
+        this.id = id;
     }
 
     public void assignCategory(Category category) {

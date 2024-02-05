@@ -49,22 +49,44 @@ public class EventFacade {
         return new CreateEventResponse(eventId);
     }
 
-//    @Transactional
-//    public void updateEvent(Long memberId, Long eventId, CreateEventFacadeDto updateEventFacadeDto) {
-//        Member member = memberService.getMemberById(memberId);
-//
-//        Long categoryId = updateEventFacadeDto.getCategoryId();
-//        Category category = null;
-//        if (categoryId != null) {
-//            category = categoryService.getCategoryByMemberAndId(member, categoryId);
-//        }
-//    }
+    @Transactional
+    public void updateEvent(Long memberId, Long eventId, CreateEventFacadeDto updateEventFacadeDto) {
+        Member member = memberService.getMemberById(memberId);
+
+        Long categoryId = updateEventFacadeDto.getCategoryId();
+        Category category = null;
+        if (categoryId != null) {
+            category = categoryService.getCategoryByMemberAndId(member, categoryId);
+        }
+
+        eventService.updateEvent(
+                member,
+                eventId,
+                category,
+                updateEventFacadeDto
+        );
+    }
 
     public GetAllEventsResponse getAllEvents(Long memberId, EventFilterCriteria criteria) {
         Member member = memberService.getMemberById(memberId);
-        List<Event> events = eventService.getAllEvents(member, criteria);
+        Long categoryId = criteria.getCategoryId();
+        List<Long> categoryIds = null;
+        if (categoryId != null) {
+            boolean fetchChildren = criteria.isFetchCategoryChildren();
+            System.out.println("fetchChildren = " + fetchChildren);
+            if (fetchChildren) {
+                // Recursively fetch all the subcategory ids
+                System.out.println("recursive fetching");
+                Category category = categoryService.getCategoryByMemberAndId(member, categoryId);
+                categoryIds = categoryService.getAllCategoryIdsOfSubtree(category);
+            } else {
+                categoryIds = new ArrayList<>(Collections.singletonList(categoryId));
+            }
+        }
+        System.out.println("categoryIds = " + categoryIds);
+
+        List<Event> events = eventService.getAllEvents(member, categoryIds, criteria);
         List<GetAllEventsResponse.EventDto> eventDtos = new ArrayList<>();
-        System.out.println("A");
 
         for (Event event : events) {
             EventDate eventDate = event.getEventDate();

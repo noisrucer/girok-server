@@ -2,6 +2,7 @@ package com.girok.girokserver.domain.event.service;
 
 import com.girok.girokserver.core.exception.CustomException;
 import com.girok.girokserver.domain.category.entity.Category;
+import com.girok.girokserver.domain.category.repository.CategoryRepository;
 import com.girok.girokserver.domain.event.controller.request.EventFilterCriteria;
 import com.girok.girokserver.domain.event.entity.Event;
 import com.girok.girokserver.domain.event.entity.EventDate;
@@ -27,6 +28,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventQueryRepository eventQueryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Long createEvent(
@@ -56,11 +58,41 @@ public class EventService {
         eventRepository.save(event);
         return event.getId();
     }
-    
 
-    public List<Event> getAllEvents(Member member, EventFilterCriteria criteria) {
+    @Transactional
+    public void updateEvent(
+            Member member,
+            Long eventId,
+            Category category,
+            CreateEventFacadeDto updateEventFacadeDto
+    ) {
+        Event event = eventRepository.findByMemberAndId(member, eventId)
+                .orElseThrow(() -> new CustomException(EVENT_NOT_FOUND));
+
+        EventDate eventDate = EventDate.builder()
+                .startDate(updateEventFacadeDto.getStartDate())
+                .startTime(updateEventFacadeDto.getStartTime())
+                .endDate(updateEventFacadeDto.getEndDate())
+                .endTime(updateEventFacadeDto.getEndTime())
+                .build();
+
+        event.updateEvent(
+                updateEventFacadeDto.getName(),
+                category,
+                member,
+                eventDate,
+                updateEventFacadeDto.getRepetitionType(),
+                updateEventFacadeDto.getRepetitionEndDate(),
+                updateEventFacadeDto.getTags(),
+                updateEventFacadeDto.getPriority(),
+                updateEventFacadeDto.getMemo()
+        );
+    }
+
+
+    public List<Event> getAllEvents(Member member, List<Long> categoryIds, EventFilterCriteria criteria) {
         return eventQueryRepository.findEvents(
-                member.getId(), criteria.getStartDate(), criteria.getEndDate(), criteria.getCategoryId(), criteria.getPriority(), criteria.getTags()
+                member.getId(), criteria.getStartDate(), criteria.getEndDate(), categoryIds, criteria.getPriority(), criteria.getTags()
         );
     }
 

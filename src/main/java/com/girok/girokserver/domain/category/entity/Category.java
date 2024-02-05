@@ -9,7 +9,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "category", uniqueConstraints = {
@@ -21,7 +20,8 @@ import java.util.Optional;
 @Builder
 public class Category extends AuditBase {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -64,6 +64,7 @@ public class Category extends AuditBase {
     }
 
     // Relation methods
+
     /**
      * Add a child category (<->)
      */
@@ -105,6 +106,5 @@ public class Category extends AuditBase {
     public void updateColor(CategoryColor color) {
         this.color = color;
     }
-
 
 }

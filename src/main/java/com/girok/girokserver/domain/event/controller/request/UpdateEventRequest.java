@@ -1,10 +1,11 @@
 package com.girok.girokserver.domain.event.controller.request;
 
-import lombok.AllArgsConstructor;
+import com.girok.girokserver.domain.event.controller.validation.ValidCreateEventRequest;
 import lombok.Getter;
 
+
+@ValidCreateEventRequest
 @Getter
-@AllArgsConstructor
-public class UpdateEventRequest {
+public class UpdateEventRequest extends CreateEventRequest {
 
 }

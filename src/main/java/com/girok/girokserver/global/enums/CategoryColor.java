@@ -15,10 +15,11 @@ public enum CategoryColor {
     NEON,
     ROLLER_RINK,
     LIGHT_CHOCO,
-    THOMAS;
+    THOMAS,
+    GREY;
 
 
     public static CategoryColor getDefaultColor() {
-        return CategoryColor.PINK;
+        return CategoryColor.GREY;
     }
 }

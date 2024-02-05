@@ -25,14 +25,14 @@ public class EventQueryRepository {
     private static final QEventTag eventTag = QEventTag.eventTag;
 
 
-    public List<Event> findEvents(Long memberId, LocalDate windowStartDate, LocalDate windowEndDate, Long categoryId, EventPriority priority, List<String> tagNames) {
+    public List<Event> findEvents(Long memberId, LocalDate windowStartDate, LocalDate windowEndDate, List<Long> categoryIds, EventPriority priority, List<String> tagNames) {
 
         List<Event> nonRepeatingEvents = queryFactory
                 .select(event)
                 .from(event)
                 .where(
                         event.member.id.eq(memberId),
-                        metadataCombinedCondition(categoryId, priority, tagNames),
+                        metadataCombinedCondition(categoryIds, priority, tagNames),
                         event.eventDate.startDate.between(windowStartDate, windowEndDate)
                                 .or(
                                         event.eventDate.startDate.before(windowStartDate)
@@ -47,7 +47,7 @@ public class EventQueryRepository {
                 .from(event)
                 .where(
                         event.member.id.eq(memberId),
-                        metadataCombinedCondition(categoryId, priority, tagNames),
+                        metadataCombinedCondition(categoryIds, priority, tagNames),
                         event.eventDate.startDate.before(windowStartDate),
                         event.repetitionType.isNotNull(),
                         event.repetitionEndDate.goe(windowStartDate)
@@ -89,8 +89,8 @@ public class EventQueryRepository {
         return nonRepeatingEvents;
     }
 
-    private BooleanExpression categoryIdEq(Long categoryId) {
-        return categoryId != null ? event.category.id.eq(categoryId) : null;
+    private BooleanExpression categoryIdEq(List<Long> categoryIds) {
+        return categoryIds != null ? event.category.id.in(categoryIds) : null;
     }
 
     private BooleanExpression priorityEq(EventPriority priority) {
@@ -118,9 +118,9 @@ public class EventQueryRepository {
         return combinedCondition;
     }
 
-    private BooleanExpression metadataCombinedCondition(Long categoryId, EventPriority priority, List<String> tagNames) {
+    private BooleanExpression metadataCombinedCondition(List<Long> categoryIds, EventPriority priority, List<String> tagNames) {
         // Create individual conditions
-        BooleanExpression categoryCondition = categoryIdEq(categoryId);
+        BooleanExpression categoryCondition = categoryIdEq(categoryIds);
         BooleanExpression priorityCondition = priorityEq(priority);
         BooleanExpression tagsCondition = tagsIn(tagNames);
 
