@@ -146,7 +146,7 @@ public class AuthController {
 
     @GetMapping("/auth/verify/access-token")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Validate access token")
+    @Operation(summary = "Validate access toke")
     public ValidateAccessTokenResponse validateAccessToken() {
         return new ValidateAccessTokenResponse(true);
     }
