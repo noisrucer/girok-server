@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
   config:
@@ -14,7 +14,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -24,14 +24,18 @@ logging.level:
   org.springframework.security: DEBUG
 
 springdoc:
-  packages-to-scan: com.girok.girokserver.domain.auth.controller
+  packages-to-scan:
+    - com.girok.girokserver.domain.auth.controller
+    - com.girok.girokserver.domain.category.controller
+    - com.girok.girokserver.domain.event.controller
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
     path: /
     disable-swagger-default-url: true
     display-request-duration: true
-    operations-sorter: alpha
+    operations-sorter: method
+    tags-sorter: alpha
 
 jwt:
   secret: ${JWT_SECRET}

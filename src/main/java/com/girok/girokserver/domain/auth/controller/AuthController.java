@@ -4,33 +4,33 @@ import com.girok.girokserver.core.security.jwt.dto.JwtTokenDto;
 import com.girok.girokserver.domain.auth.controller.request.*;
 import com.girok.girokserver.domain.auth.controller.response.CheckEmailRegisteredResponse;
 import com.girok.girokserver.domain.auth.controller.response.LoginResponse;
+import com.girok.girokserver.domain.auth.controller.response.ValidateAccessTokenResponse;
 import com.girok.girokserver.domain.auth.facade.AuthFacade;
-import com.girok.girokserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Authentication", description = "Authentication Process API")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "1. Authentication")
 @RestController
 @RequiredArgsConstructor
-@Validated
 @RequestMapping("/api/v1")
 public class AuthController {
 
     private final AuthFacade authFacade;
+
+    @GetMapping("/health-check")
+    @ResponseStatus(HttpStatus.OK)
+    public String healthCheck() {
+        return "I'm doing fine";
+    }
 
     @PostMapping("/auth/verification-code")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -98,7 +98,7 @@ public class AuthController {
     @Operation(summary = "Send reset password email verification code")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "**Bad Request**: \n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist."
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist."
             ),
     })
     public void sendResetPasswordVerificationCode(@Valid @RequestBody SendVerificationCodeRequest request) {
@@ -110,7 +110,7 @@ public class AuthController {
     @Operation(summary = "Verify reset password verification code")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "Bad Request: \n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist.\n" +
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist.\n" +
                     "- `EMAIL_VERIFICATION_NOT_FOUND`: Email verification with the given email is not found.\n" +
                     "- `EMAIL_ALREADY_VERIFIED`: Email address is already verified.\n" +
                     "- `INVALID_VERIFICATION_CODE`: Invalid verification code.\n" +
@@ -126,7 +126,7 @@ public class AuthController {
     @Operation(summary = "Reset password")
     @ApiResponses({
             @ApiResponse(responseCode = "400", description = "**Bad Request**:\n" +
-                    "- `MEMBER_NOT_EXIST`: Member with the given email does not exist.\n" +
+                    "- `MEMBER_NOT_FOUND`: Member with the given email does not exist.\n" +
                     "- `EMAIL_VERIFICATION_NOT_FOUND`: Email verification with the given email is not found.\n" +
                     "- `EMAIL_NOT_VERIFIED`: Email is not verified.\n" +
                     "- `INVALID_VERIFICATION_CODE`: Invalid verification code."
@@ -139,9 +139,16 @@ public class AuthController {
     @GetMapping("/auth/email/registered")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Check whether the given email is registered")
-    public ResponseEntity<CheckEmailRegisteredResponse> checkEmailRegistered(@Email @RequestParam("email") String email) {
+    public ResponseEntity<CheckEmailRegisteredResponse> checkEmailRegistered(@RequestParam("email") String email) {
         boolean isRegistered = authFacade.checkEmailRegistered(email);
         return ResponseEntity.ok().body(new CheckEmailRegisteredResponse(isRegistered));
+    }
+
+    @GetMapping("/auth/verify/access-token")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Validate access token")
+    public ValidateAccessTokenResponse validateAccessToken() {
+        return new ValidateAccessTokenResponse(true);
     }
 
 }

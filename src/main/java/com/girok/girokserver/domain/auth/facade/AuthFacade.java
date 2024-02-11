@@ -92,7 +92,7 @@ public class AuthFacade {
 
     private void checkMemberRegisteredByEmail(String email) {
         if (!memberService.isUserRegisteredByEmail(email)) {
-            throw new CustomException(MEMBER_NOT_EXIST);
+            throw new CustomException(MEMBER_NOT_FOUND);
         }
     }
 

@@ -116,7 +116,7 @@ public class AuthService {
     public JwtTokenDto login(String email, String password) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         if (optionalMember.isEmpty()) {
-            throw new CustomException(MEMBER_NOT_EXIST);
+            throw new CustomException(MEMBER_NOT_FOUND);
         }
         Member member = optionalMember.get();
 

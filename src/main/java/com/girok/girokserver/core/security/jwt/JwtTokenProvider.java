@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -31,12 +32,12 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtTokenDto generateToken(Long userId) {
+    public JwtTokenDto generateToken(Long memberId) {
         Date accessTokenExpiration = getTokenExpiration(accessTokenExpirationTimeMs);
         Date refreshTokenExpiration = getTokenExpiration(refreshTokenExpirationTimeMs);
 
         String accessToken = Jwts.builder()
-                .setSubject(userId.toString())
+                .setSubject(memberId.toString())
                 .setExpiration(accessTokenExpiration)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -65,16 +66,16 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
 
-            Long userId = Long.parseLong(parsedToken.getBody().getSubject());
-            return new JwtUserInfo(userId);
-        } catch (SecurityException | MalformedJwtException e) {
+            Long memberId = Long.parseLong(parsedToken.getBody().getSubject());
+            return new JwtUserInfo(memberId);
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
             throw new CustomException(INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
             throw new CustomException(EXPIRED_JWT_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new CustomException(INVALID_JWT_TOKEN);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(INVALID_JWT_TOKEN);
         }
+    }
+
+    public JwtUserInfo getCurrentUserInfo() {
+        return (JwtUserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

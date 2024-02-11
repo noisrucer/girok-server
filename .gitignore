@@ -9,7 +9,9 @@ src/querydsl/
 **/.env
 src/main/generated/
 envscript.sh
-
+env
+env.dev
+publish_docker.sh
 
 ### STS ###
 .apt_generated

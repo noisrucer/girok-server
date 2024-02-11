@@ -1,10 +1,10 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
 
   datasource:
     url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
@@ -14,13 +14,25 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: update
 
 logging.level:
-  org.hibernate.SQL: debug
+#  org.hibernate.SQL: debug
+  org.springframework.security: DEBUG
+
+springdoc:
+  packages-to-scan:
+    - com.girok.girokserver.domain.auth.controller
+    - com.girok.girokserver.domain.category.controller
+    - com.girok.girokserver.domain.event.controller
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: method
+    tags-sorter: alpha
 
 jwt:
   secret: ${JWT_SECRET}
@@ -30,4 +42,7 @@ jwt:
 mailgun:
   api_key: ${MAILGUN_API_KEY}
   domain: ${MAILGUN_DOMAIN}
+
+email_verification:
+  expire_seconds: ${VERIFICATION_EXPIRE_SECONDS}
 
