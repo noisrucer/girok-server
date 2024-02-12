@@ -10,10 +10,7 @@ import com.girok.girokserver.domain.category.controller.request.CreateCategoryBy
 import com.girok.girokserver.domain.category.controller.request.CreateCategoryByPathRequest;
 import com.girok.girokserver.domain.category.controller.request.UpdateCategoryInfoRequest;
 import com.girok.girokserver.domain.category.controller.request.UpdateCategoryParentRequest;
-import com.girok.girokserver.domain.category.controller.response.CreateCategoryByIdResponse;
-import com.girok.girokserver.domain.category.controller.response.CreateCategoryByPathResponse;
-import com.girok.girokserver.domain.category.controller.response.GetCategoriesResponse;
-import com.girok.girokserver.domain.category.controller.response.GetCategoryIdByPathResponse;
+import com.girok.girokserver.domain.category.controller.response.*;
 import com.girok.girokserver.domain.category.entity.Category;
 import com.girok.girokserver.domain.category.facade.CategoryFacade;
 import com.girok.girokserver.domain.category.facade.dto.CategoryUpdateDto;
@@ -49,6 +46,16 @@ public class CategoryController {
         List<CategoryResponseDto> categoryResponseDtos = CategoryMapper.mapCategoriesToCategoryDtos(categories);
 
         return ResponseEntity.ok().body(new GetCategoriesResponse(categoryResponseDtos));
+    }
+
+    @GetMapping("/categories{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get a category information")
+    public ResponseEntity<GetCategoryResponse> getCategory(@PathVariable(name = "id") Long categoryId) {
+        JwtUserInfo jwtUserInfo = jwtTokenProvider.getCurrentUserInfo();
+        Long memberId = jwtUserInfo.getMemberId();
+        GetCategoryResponse responseBody = categoryFacade.getCategory(memberId, categoryId);
+        return ResponseEntity.ok().body(responseBody);
     }
 
     @PostMapping("/categories")

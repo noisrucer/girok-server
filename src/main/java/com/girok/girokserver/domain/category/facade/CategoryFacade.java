@@ -1,7 +1,6 @@
 package com.girok.girokserver.domain.category.facade;
 
-import com.girok.girokserver.domain.category.controller.dto.CategoryResponseDto;
-import com.girok.girokserver.domain.category.controller.mapper.CategoryMapper;
+import com.girok.girokserver.domain.category.controller.response.GetCategoryResponse;
 import com.girok.girokserver.domain.category.entity.Category;
 import com.girok.girokserver.domain.category.facade.dto.CategoryUpdateDto;
 import com.girok.girokserver.domain.category.service.CategoryService;
@@ -13,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +25,12 @@ public class CategoryFacade {
     public List<Category> getCategoriesAsTree(Long memberId) {
         Member member = memberService.getMemberById(memberId);
         return categoryService.getCategoriesAsTree(member);
+    }
+
+    public GetCategoryResponse getCategory(Long memberId, Long categoryId) {
+        Member member = memberService.getMemberById(memberId);
+        Category category = categoryService.getCategoryByMemberAndId(member, categoryId);
+        return new GetCategoryResponse(category.getColor());
     }
 
 
