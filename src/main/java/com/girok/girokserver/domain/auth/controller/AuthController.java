@@ -150,5 +150,4 @@ public class AuthController {
     public ValidateAccessTokenResponse validateAccessToken() {
         return new ValidateAccessTokenResponse(true);
     }
-
 }
