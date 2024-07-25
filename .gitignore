@@ -10,6 +10,7 @@ src/querydsl/
 src/main/generated/
 envscript.sh
 env
+env
 env.dev
 publish_docker.sh
 
