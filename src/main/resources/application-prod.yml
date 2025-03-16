@@ -45,4 +45,3 @@ mailgun:
 
 email_verification:
   expire_seconds: ${VERIFICATION_EXPIRE_SECONDS}
-
