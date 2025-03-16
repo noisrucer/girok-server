@@ -29,7 +29,7 @@ public class AuthController {
     @GetMapping("/health-check")
     @ResponseStatus(HttpStatus.OK)
     public String healthCheck() {
-        return "I'm doing fine";
+        return "I'm doing fine!";
     }
 
     @PostMapping("/auth/verification-code")

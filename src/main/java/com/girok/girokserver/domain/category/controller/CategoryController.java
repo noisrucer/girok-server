@@ -48,7 +48,7 @@ public class CategoryController {
         return ResponseEntity.ok().body(new GetCategoriesResponse(categoryResponseDtos));
     }
 
-    @GetMapping("/categories{id}")
+    @GetMapping("/categories/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get a category information")
     public ResponseEntity<GetCategoryResponse> getCategory(@PathVariable(name = "id") Long categoryId) {

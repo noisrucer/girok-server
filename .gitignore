@@ -12,6 +12,12 @@ envscript.sh
 env
 env
 env.dev
+.env.prod
+.env.prod
+.env
+.env.dev
+.env.local
+env.local
 publish_docker.sh
 
 ### STS ###

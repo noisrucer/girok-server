@@ -36,7 +36,6 @@ env:
   ECS_SERVICE: girok-server-prod                 # set this to your Amazon ECS service name
   ECS_CLUSTER: girok                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .aws/task-definition-prod.json # set this to the path to your Amazon ECS task definition
-  # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: girok-server-prod           # set this to the name of the container in the
   # containerDefinitions section of your task definition
 

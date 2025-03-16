@@ -76,14 +76,12 @@ public class EventFacade {
             System.out.println("fetchChildren = " + fetchChildren);
             if (fetchChildren) {
                 // Recursively fetch all the subcategory ids
-                System.out.println("recursive fetching");
                 Category category = categoryService.getCategoryByMemberAndId(member, categoryId);
                 categoryIds = categoryService.getAllCategoryIdsOfSubtree(category);
             } else {
                 categoryIds = new ArrayList<>(Collections.singletonList(categoryId));
             }
         }
-        System.out.println("categoryIds = " + categoryIds);
 
         List<Event> events = eventService.getAllEvents(member, categoryIds, criteria);
         List<GetAllEventsResponse.EventDto> eventDtos = new ArrayList<>();
